@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - School Management</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <span class="logo-text">TASMIN</span>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item active">
+                <i class="fas fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="teachers.html" class="nav-item">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Teachers</span>
+            </a>
+            <a href="students.html" class="nav-item">
+                <i class="fas fa-user-graduate"></i>
+                <span>Students</span>
+            </a>
+            <a href="finance.html" class="nav-item">
+                <i class="fas fa-wallet"></i>
+                <span>Finance</span>
+            </a>
+            <a href="attendance.html" class="nav-item">
+                <i class="fas fa-calendar-check"></i>
+                <span>Attendance</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="#" class="nav-item" onclick="logoutUser(); return false;">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 class="page-title">Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="user-profile" id="userProfile">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" alt="User" id="userAvatar">
+                    <div class="user-info">
+                        <span class="user-name" id="userName">Loading...</span>
+                        <span class="user-role" id="userRole">-</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Total Students</p>
+                    <h3 class="stat-value" id="totalStudents">0</h3>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>Active students</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Total Teachers</p>
+                    <h3 class="stat-value" id="totalTeachers">0</h3>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>Active teachers</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-bangladeshi-taka-sign"></i>
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Total Revenue</p>
+                    <h3 class="stat-value" id="totalRevenue">TK 00</h3>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>Collected fees</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Attendance Rate</p>
+                    <h3 class="stat-value" id="attendanceRate">0%</h3>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>Last 30 days</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h2 class="section-title">Quick Actions</h2>
+            <div class="actions-grid">
+                <a href="students.html" class="action-card">
+                    <div class="action-icon purple">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h3>Add Student</h3>
+                    <p>Register new student</p>
+                </a>
+                <a href="teachers.html" class="action-card">
+                    <div class="action-icon blue">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Add Teacher</h3>
+                    <p>Register new teacher</p>
+                </a>
+                <a href="attendance.html" class="action-card">
+                    <div class="action-icon green">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <h3>Mark Attendance</h3>
+                    <p>Take today's attendance</p>
+                </a>
+                <a href="finance.html" class="action-card">
+                    <div class="action-icon orange">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <h3>Collect Fee</h3>
+                    <p>Record payment</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+            <h2 class="section-title">Recent Students</h2>
+            <div class="activity-list" id="recentStudents">
+                <div style="text-align: center; padding: 40px; color: #64748b;">
+                    Loading...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Check authentication
+        checkAuth();
+
+        // Load dashboard data
+        loadDashboardData();
+
+        async function loadDashboardData() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            // Update user info
+            document.getElementById('userName').textContent = user.fullName || user.username || 'Admin';
+            document.getElementById('userRole').textContent = user.role || 'User';
+            
+            try {
+                // Load statistics
+                const statsRes = await fetch('http://localhost:3000/api/stats', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (statsRes.ok) {
+                    const stats = await statsRes.json();
+                    document.getElementById('totalStudents').textContent = stats.totalStudents || 0;
+                    document.getElementById('totalTeachers').textContent = stats.totalTeachers || 0;
+                    document.getElementById('totalRevenue').textContent = '$' + (stats.totalRevenue || 0).toLocaleString();
+                    document.getElementById('attendanceRate').textContent = (stats.attendanceRate || 0) + '%';
+                }
+                
+                // Load recent students
+                const studentsRes = await fetch('http://localhost:3000/api/students', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (studentsRes.ok) {
+                    const students = await studentsRes.json();
+                    displayRecentStudents(students.slice(0, 5));
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        function displayRecentStudents(students) {
+            const container = document.getElementById('recentStudents');
+            
+            if (students.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #64748b;">No students yet. <a href="students.html" style="color: #6366f1;">Add your first student</a></div>';
+                return;
+            }
+            
+            container.innerHTML = students.map(student => `
+                <div class="activity-item">
+                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=random" alt="${student.name}">
+                    <div class="activity-info">
+                        <h4>${student.name}</h4>
+                        <p>${student.course} • ${student.studentId || 'ID Pending'}</p>
+                    </div>
+                    <span class="badge grade-${student.grade?.toLowerCase() || 'b'}">${student.grade || 'B'}</span>
+                </div>
+            `).join('');
+        }
+
+        function logoutUser() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

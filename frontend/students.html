@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students - School Management</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <span class="logo-text">TASMIN</span>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="teachers.html" class="nav-item">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Teachers</span>
+            </a>
+            <a href="students.html" class="nav-item active">
+                <i class="fas fa-user-graduate"></i>
+                <span>Students</span>
+            </a>
+            <a href="finance.html" class="nav-item">
+                <i class="fas fa-wallet"></i>
+                <span>Finance</span>
+            </a>
+            <a href="attendance.html" class="nav-item">
+                <i class="fas fa-calendar-check"></i>
+                <span>Attendance</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="#" class="nav-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 class="page-title">Students</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search students..." id="searchInput">
+                </div>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" alt="User">
+                    <div class="user-info">
+                        <span class="user-name" id="userName">Admin</span>
+                        <span class="user-role" id="userRole">Administrator</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Student Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2 class="table-title">All Students</h2>
+                <div class="table-actions">
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" onclick="filterStudents('all')">All Students</button>
+                        <button class="filter-tab" onclick="filterStudents('active')">Active</button>
+                        <button class="filter-tab" onclick="filterStudents('inactive')">Inactive</button>
+                    </div>
+                    <button class="btn-primary" onclick="openAddModal()">
+                        <i class="fas fa-plus"></i>
+                        Add Student
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Age</th>
+                            <th>Course</th>
+                            <th>Grade</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTableBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 40px;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 32px; color: #6366f1;"></i>
+                                <p style="margin-top: 16px; color: #64748b;">Loading students...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-pagination">
+                <div class="pagination-info">
+                    Showing <span id="showingCount">0</span> of <span id="totalCount">0</span> students
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Student Modal -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Student</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="studentForm" class="modal-form">
+                <input type="hidden" id="studentMongoId">
+                
+                <!-- CUSTOM STUDENT ID FIELD -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Student ID *</label>
+                        <input type="text" id="studentId" required placeholder="Enter custom ID (e.g., 223475758)">
+                        <small style="color: #64748b; font-size: 12px; margin-top: 4px; display: block;">Enter a unique student ID number</small>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="studentName" required placeholder="Enter student name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="studentEmail" required placeholder="student@email.com">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Age *</label>
+                        <input type="number" id="studentAge" required min="5" max="100" placeholder="Enter age">
+                    </div>
+                    <div class="form-group">
+                        <label>Grade *</label>
+                        <select id="studentGrade" required>
+                            <option value="">Select grade</option>
+                            <option value="A">A - Excellent</option>
+                            <option value="B">B - Good</option>
+                            <option value="C">C - Average</option>
+                            <option value="D">D - Below Average</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Course *</label>
+                        <input type="text" id="studentCourse" required placeholder="e.g., Computer Science">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="studentStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Parent Name</label>
+                        <input type="text" id="parentName" placeholder="Parent/Guardian name">
+                    </div>
+                    <div class="form-group">
+                        <label>Parent Contact</label>
+                        <input type="tel" id="parentContact" placeholder="Phone number">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" id="studentCity" placeholder="City">
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" id="studentAddress" placeholder="Full address">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        <i class="fas fa-save"></i>
+                        Save Student
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        checkAuth();
+
+        let allStudents = [];
+        let currentFilter = 'all';
+
+        // Load students on page load
+        loadStudents();
+
+        // Load user info
+        const user = getUser();
+        if (user) {
+            document.getElementById('userName').textContent = user.fullName || user.username;
+            document.getElementById('userRole').textContent = user.role || 'User';
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = allStudents.filter(student => 
+                student.name.toLowerCase().includes(searchTerm) ||
+                (student.email && student.email.toLowerCase().includes(searchTerm)) ||
+                student.course.toLowerCase().includes(searchTerm) ||
+                (student.studentId && student.studentId.toLowerCase().includes(searchTerm))
+            );
+            displayStudents(filtered);
+        });
+
+        // Load students from API
+        async function loadStudents() {
+            try {
+                const response = await apiRequest('/api/students');
+                
+                if (response.ok) {
+                    allStudents = await response.json();
+                    displayStudents(allStudents);
+                } else {
+                    throw new Error('Failed to load students');
+                }
+            } catch (error) {
+                console.error('Error loading students:', error);
+                document.getElementById('studentsTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 48px; color: #ef4444; margin-bottom: 16px;"></i>
+                            <p style="color: #ef4444; font-weight: 600;">Failed to load students</p>
+                            <p style="color: #64748b; font-size: 14px; margin-top: 8px;">Please check your connection and try again</p>
+                            <button onclick="loadStudents()" class="btn-primary" style="margin-top: 16px;">
+                                <i class="fas fa-refresh"></i> Retry
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Display students in table
+        function displayStudents(students) {
+            const tbody = document.getElementById('studentsTableBody');
+            const totalCount = document.getElementById('totalCount');
+            const showingCount = document.getElementById('showingCount');
+
+            if (students.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-inbox" style="font-size: 48px; color: #cbd5e1; margin-bottom: 16px;"></i>
+                            <p style="color: #64748b; font-weight: 600;">No students found</p>
+                            <p style="color: #94a3b8; font-size: 14px; margin-top: 8px;">Add your first student to get started</p>
+                        </td>
+                    </tr>
+                `;
+                totalCount.textContent = '0';
+                showingCount.textContent = '0';
+                return;
+            }
+
+            tbody.innerHTML = students.map(student => `
+                <tr>
+                    <td><strong>${student.studentId || 'N/A'}</strong></td>
+                    <td>
+                        <div class="student-info">
+                            <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=random" 
+                                 alt="${student.name}" class="student-avatar">
+                            <span class="student-name">${student.name}</span>
+                        </div>
+                    </td>
+                    <td>${student.email || 'N/A'}</td>
+                    <td>${student.age}</td>
+                    <td>${student.course}</td>
+                    <td><span class="badge grade-${student.grade.toLowerCase()}">${student.grade}</span></td>
+                    <td><span class="badge ${student.status === 'active' ? 'grade-a' : 'grade-d'}">${student.status}</span></td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="action-btn" onclick="editStudent('${student._id}')" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete" onclick="deleteStudent('${student._id}', '${student.name}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            totalCount.textContent = allStudents.length;
+            showingCount.textContent = students.length;
+        }
+
+        // Filter students
+        function filterStudents(filter) {
+            currentFilter = filter;
+            
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let filtered = allStudents;
+            if (filter === 'active') {
+                filtered = allStudents.filter(s => s.status === 'active');
+            } else if (filter === 'inactive') {
+                filtered = allStudents.filter(s => s.status === 'inactive');
+            }
+            
+            displayStudents(filtered);
+        }
+
+        // Open add modal
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Student';
+            document.getElementById('studentForm').reset();
+            document.getElementById('studentMongoId').value = '';
+            document.getElementById('studentId').value = '';
+            document.getElementById('studentModal').classList.add('active');
+        }
+
+        // Edit student
+        async function editStudent(id) {
+            try {
+                const response = await apiRequest(`/api/students/${id}`);
+                if (response.ok) {
+                    const student = await response.json();
+                    
+                    document.getElementById('modalTitle').textContent = 'Edit Student';
+                    document.getElementById('studentMongoId').value = student._id;
+                    document.getElementById('studentId').value = student.studentId || '';
+                    document.getElementById('studentName').value = student.name;
+                    document.getElementById('studentEmail').value = student.email;
+                    document.getElementById('studentAge').value = student.age;
+                    document.getElementById('studentGrade').value = student.grade;
+                    document.getElementById('studentCourse').value = student.course;
+                    document.getElementById('studentStatus').value = student.status;
+                    document.getElementById('parentName').value = student.parentName || '';
+                    document.getElementById('parentContact').value = student.parentContact || '';
+                    document.getElementById('studentCity').value = student.city || '';
+                    document.getElementById('studentAddress').value = student.address || '';
+                    
+                    document.getElementById('studentModal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error loading student:', error);
+                showNotification('Failed to load student details', 'error');
+            }
+        }
+
+        // Delete student
+        async function deleteStudent(id, name) {
+            if (!confirm(`Are you sure you want to delete ${name}? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await apiRequest(`/api/students/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showNotification('Student deleted successfully!', 'success');
+                    loadStudents();
+                } else {
+                    throw new Error('Failed to delete student');
+                }
+            } catch (error) {
+                console.error('Error deleting student:', error);
+                showNotification('Failed to delete student', 'error');
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('studentModal').classList.remove('active');
+        }
+
+        // Handle form submission
+        document.getElementById('studentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const mongoId = document.getElementById('studentMongoId').value;
+            const studentData = {
+                studentId: document.getElementById('studentId').value,  // CUSTOM ID
+                name: document.getElementById('studentName').value,
+                email: document.getElementById('studentEmail').value,
+                age: parseInt(document.getElementById('studentAge').value),
+                grade: document.getElementById('studentGrade').value,
+                course: document.getElementById('studentCourse').value,
+                status: document.getElementById('studentStatus').value,
+                parentName: document.getElementById('parentName').value,
+                parentContact: document.getElementById('parentContact').value,
+                city: document.getElementById('studentCity').value,
+                address: document.getElementById('studentAddress').value
+            };
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            try {
+                const url = mongoId ? `/api/students/${mongoId}` : '/api/students';
+                const method = mongoId ? 'PUT' : 'POST';
+
+                const response = await apiRequest(url, {
+                    method: method,
+                    body: JSON.stringify(studentData)
+                });
+
+                if (response.ok) {
+                    showNotification(
+                        mongoId ? 'Student updated successfully!' : 'Student added successfully!',
+                        'success'
+                    );
+                    closeModal();
+                    loadStudents();
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to save student');
+                }
+            } catch (error) {
+                console.error('Error saving student:', error);
+                showNotification(error.message || 'Failed to save student', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Student';
+            }
+        });
+
+        // Close modal on backdrop click
+        document.getElementById('studentModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>
