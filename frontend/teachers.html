@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachers - School Management</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <span class="logo-text">Akademi</span>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="teachers.html" class="nav-item active">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Teachers</span>
+            </a>
+            <a href="students.html" class="nav-item">
+                <i class="fas fa-user-graduate"></i>
+                <span>Students</span>
+            </a>
+            <a href="finance.html" class="nav-item">
+                <i class="fas fa-wallet"></i>
+                <span>Finance</span>
+            </a>
+            <a href="attendance.html" class="nav-item">
+                <i class="fas fa-calendar-check"></i>
+                <span>Attendance</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="#" class="nav-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 class="page-title">Teachers</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search teachers..." id="searchInput">
+                </div>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" alt="User">
+                    <div class="user-info">
+                        <span class="user-name" id="userName">Admin</span>
+                        <span class="user-role" id="userRole">Administrator</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Teacher Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2 class="table-title">All Teachers</h2>
+                <div class="table-actions">
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" onclick="filterTeachers('all')">All Teachers</button>
+                        <button class="filter-tab" onclick="filterTeachers('active')">Active</button>
+                        <button class="filter-tab" onclick="filterTeachers('inactive')">Inactive</button>
+                    </div>
+                    <button class="btn-primary" onclick="openAddModal()">
+                        <i class="fas fa-plus"></i>
+                        Add Teacher
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Teacher ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Subject</th>
+                            <th>Experience</th>
+                            <th>Salary</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teachersTableBody">
+                        <tr>
+                            <td colspan="9" style="text-align: center; padding: 40px;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 32px; color: #6366f1;"></i>
+                                <p style="margin-top: 16px; color: #64748b;">Loading teachers...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-pagination">
+                <div class="pagination-info">
+                    Showing <span id="showingCount">0</span> of <span id="totalCount">0</span> teachers
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Teacher Modal -->
+    <div id="teacherModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Teacher</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="teacherForm" class="modal-form">
+                <input type="hidden" id="teacherId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="teacherName" required placeholder="Enter teacher name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="teacherEmail" required placeholder="teacher@email.com">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="teacherPhone" placeholder="Phone number">
+                    </div>
+                    <div class="form-group">
+                        <label>Subject *</label>
+                        <input type="text" id="teacherSubject" required placeholder="e.g., Mathematics">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Qualification</label>
+                        <input type="text" id="teacherQualification" placeholder="e.g., M.Sc, B.Ed">
+                    </div>
+                    <div class="form-group">
+                        <label>Experience (Years)</label>
+                        <input type="number" id="teacherExperience" min="0" placeholder="Years of experience">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Salary</label>
+                        <input type="number" id="teacherSalary" min="0" placeholder="Monthly salary">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="teacherStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        <i class="fas fa-save"></i>
+                        Save Teacher
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        checkAuth();
+
+        let allTeachers = [];
+        let currentFilter = 'all';
+
+        // Load teachers on page load
+        loadTeachers();
+
+        // Load user info
+        const user = getUser();
+        if (user) {
+            document.getElementById('userName').textContent = user.fullName || user.username;
+            document.getElementById('userRole').textContent = user.role || 'User';
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = allTeachers.filter(teacher => 
+                teacher.name.toLowerCase().includes(searchTerm) ||
+                (teacher.email && teacher.email.toLowerCase().includes(searchTerm)) ||
+                (teacher.subject && teacher.subject.toLowerCase().includes(searchTerm)) ||
+                (teacher.teacherId && teacher.teacherId.toLowerCase().includes(searchTerm))
+            );
+            displayTeachers(filtered);
+        });
+
+        // Load teachers from API
+        async function loadTeachers() {
+            try {
+                const response = await apiRequest('/api/teachers');
+                
+                if (response.ok) {
+                    allTeachers = await response.json();
+                    displayTeachers(allTeachers);
+                } else {
+                    throw new Error('Failed to load teachers');
+                }
+            } catch (error) {
+                console.error('Error loading teachers:', error);
+                document.getElementById('teachersTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 48px; color: #ef4444; margin-bottom: 16px;"></i>
+                            <p style="color: #ef4444; font-weight: 600;">Failed to load teachers</p>
+                            <button onclick="loadTeachers()" class="btn-primary" style="margin-top: 16px;">
+                                <i class="fas fa-refresh"></i> Retry
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Display teachers in table
+        function displayTeachers(teachers) {
+            const tbody = document.getElementById('teachersTableBody');
+            const totalCount = document.getElementById('totalCount');
+            const showingCount = document.getElementById('showingCount');
+
+            if (teachers.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-chalkboard-teacher" style="font-size: 48px; color: #cbd5e1; margin-bottom: 16px;"></i>
+                            <p style="color: #64748b; font-weight: 600;">No teachers found</p>
+                            <p style="color: #94a3b8; font-size: 14px; margin-top: 8px;">Add your first teacher to get started</p>
+                        </td>
+                    </tr>
+                `;
+                totalCount.textContent = '0';
+                showingCount.textContent = '0';
+                return;
+            }
+
+            tbody.innerHTML = teachers.map(teacher => `
+                <tr>
+                    <td><strong>${teacher.teacherId || 'N/A'}</strong></td>
+                    <td>
+                        <div class="student-info">
+                            <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(teacher.name)}&background=random" 
+                                 alt="${teacher.name}" class="student-avatar">
+                            <span class="student-name">${teacher.name}</span>
+                        </div>
+                    </td>
+                    <td>${teacher.email || 'N/A'}</td>
+                    <td>${teacher.phone || 'N/A'}</td>
+                    <td>${teacher.subject}</td>
+                    <td>${teacher.experience || 0} years</td>
+                    <td>TK ${teacher.salary ? teacher.salary.toLocaleString() : '0'}</td>
+                    <td><span class="badge ${teacher.status === 'active' ? 'grade-a' : 'grade-d'}">${teacher.status}</span></td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="action-btn" onclick="editTeacher('${teacher._id}')" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete" onclick="deleteTeacher('${teacher._id}', '${teacher.name}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            totalCount.textContent = allTeachers.length;
+            showingCount.textContent = teachers.length;
+        }
+
+        // Filter teachers
+        function filterTeachers(filter) {
+            currentFilter = filter;
+            
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let filtered = allTeachers;
+            if (filter === 'active') {
+                filtered = allTeachers.filter(t => t.status === 'active');
+            } else if (filter === 'inactive') {
+                filtered = allTeachers.filter(t => t.status === 'inactive');
+            }
+            
+            displayTeachers(filtered);
+        }
+
+        // Open add modal
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Teacher';
+            document.getElementById('teacherForm').reset();
+            document.getElementById('teacherId').value = '';
+            document.getElementById('teacherModal').classList.add('active');
+        }
+
+        // Edit teacher
+        async function editTeacher(id) {
+            try {
+                const response = await apiRequest(`/api/teachers/${id}`);
+                if (response.ok) {
+                    const teacher = await response.json();
+                    
+                    document.getElementById('modalTitle').textContent = 'Edit Teacher';
+                    document.getElementById('teacherId').value = teacher._id;
+                    document.getElementById('teacherName').value = teacher.name;
+                    document.getElementById('teacherEmail').value = teacher.email;
+                    document.getElementById('teacherPhone').value = teacher.phone || '';
+                    document.getElementById('teacherSubject').value = teacher.subject;
+                    document.getElementById('teacherQualification').value = teacher.qualification || '';
+                    document.getElementById('teacherExperience').value = teacher.experience || '';
+                    document.getElementById('teacherSalary').value = teacher.salary || '';
+                    document.getElementById('teacherStatus').value = teacher.status;
+                    
+                    document.getElementById('teacherModal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error loading teacher:', error);
+                showNotification('Failed to load teacher details', 'error');
+            }
+        }
+
+        // Delete teacher
+        async function deleteTeacher(id, name) {
+            if (!confirm(`Are you sure you want to delete ${name}? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await apiRequest(`/api/teachers/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showNotification('Teacher deleted successfully!', 'success');
+                    loadTeachers();
+                } else {
+                    throw new Error('Failed to delete teacher');
+                }
+            } catch (error) {
+                console.error('Error deleting teacher:', error);
+                showNotification('Failed to delete teacher', 'error');
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('teacherModal').classList.remove('active');
+        }
+
+        // Handle form submission
+        document.getElementById('teacherForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const teacherId = document.getElementById('teacherId').value;
+            const teacherData = {
+                name: document.getElementById('teacherName').value,
+                email: document.getElementById('teacherEmail').value,
+                phone: document.getElementById('teacherPhone').value,
+                subject: document.getElementById('teacherSubject').value,
+                qualification: document.getElementById('teacherQualification').value,
+                experience: parseInt(document.getElementById('teacherExperience').value) || 0,
+                salary: parseFloat(document.getElementById('teacherSalary').value) || 0,
+                status: document.getElementById('teacherStatus').value
+            };
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            try {
+                const url = teacherId ? `/api/teachers/${teacherId}` : '/api/teachers';
+                const method = teacherId ? 'PUT' : 'POST';
+
+                const response = await apiRequest(url, {
+                    method: method,
+                    body: JSON.stringify(teacherData)
+                });
+
+                if (response.ok) {
+                    showNotification(
+                        teacherId ? 'Teacher updated successfully!' : 'Teacher added successfully!',
+                        'success'
+                    );
+                    closeModal();
+                    loadTeachers();
+                } else {
+                    throw new Error('Failed to save teacher');
+                }
+            } catch (error) {
+                console.error('Error saving teacher:', error);
+                showNotification('Failed to save teacher', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Teacher';
+            }
+        });
+
+        // Close modal on backdrop click
+        document.getElementById('teacherModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>
